@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Content Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Background Blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <!-- Main Wrapper -->
+  <div class="wrapper">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div class="logo-text">
+            <h1>AI Content Analyzer</h1>
+            <span>Powered by Groq & LLaMA3</span>
+          </div>
+        </div>
+        <div class="header-badge">
+          <i class="fa-solid fa-circle status-dot"></i>
+          <span>AI Online</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main">
+
+      <!-- Input Section -->
+      <section class="input-section">
+        <div class="input-card">
+
+          <div class="input-card-header">
+            <div class="input-title">
+              <i class="fa-solid fa-file-lines"></i>
+              <h2>Paste Your Content</h2>
+            </div>
+            <div class="char-counter">
+              <span id="charCount">0</span> characters
+            </div>
+          </div>
+
+          <textarea
+            id="contentInput"
+            placeholder="Paste your article, blog post, product description, social media caption, or any text content here...
+
+Example: Paste a blog post to get summary, tone analysis, readability score, SEO suggestions and improvement tips!"
+            spellcheck="true"
+          ></textarea>
+
+          <div class="input-card-footer">
+            <div class="input-tips">
+              <i class="fa-solid fa-lightbulb"></i>
+              <span>Tip: Works best with 100+ words for detailed analysis</span>
+            </div>
+            <div class="input-actions">
+              <button class="btn-clear" id="clearBtn" title="Clear text">
+                <i class="fa-solid fa-trash"></i>
+                Clear
+              </button>
+              <button class="btn-analyze" id="analyzeBtn">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                <span>Analyze Content</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Loading Section -->
+      <section class="loading-section" id="loadingSection">
+        <div class="loading-card">
+          <div class="loading-animation">
+            <div class="loading-brain">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <div class="loading-rings">
+              <div class="ring ring-1"></div>
+              <div class="ring ring-2"></div>
+              <div class="ring ring-3"></div>
+            </div>
+          </div>
+          <h3>Analyzing Your Content...</h3>
+          <div class="loading-steps">
+            <div class="step active" id="step1">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Reading content</span>
+            </div>
+            <div class="step" id="step2">
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+              <span>Processing with AI</span>
+            </div>
+            <div class="step" id="step3">
+              <i class="fa-solid fa-circle"></i>
+              <span>Generating report</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Section -->
+      <section class="results-section" id="resultsSection">
+
+        <!-- Results Header -->
+        <div class="results-header">
+          <div class="results-title">
+            <i class="fa-solid fa-chart-bar"></i>
+            <h2>Analysis Report</h2>
+          </div>
+          <button class="btn-new" id="newAnalysisBtn">
+            <i class="fa-solid fa-plus"></i>
+            New Analysis
+          </button>
+        </div>
+
+        <!-- Quick Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card" id="statWordCount">
+            <div class="stat-icon words">
+              <i class="fa-solid fa-align-left"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="statWords">—</span>
+              <span class="stat-label">Word Count</span>
+            </div>
+          </div>
+          <div class="stat-card" id="statSentiment">
+            <div class="stat-icon sentiment">
+              <i class="fa-solid fa-face-smile"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="statSentimentVal">—</span>
+              <span class="stat-label">Sentiment</span>
+            </div>
+          </div>
+          <div class="stat-card" id="statReadability">
+            <div class="stat-icon readability">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="statReadabilityVal">—</span>
+              <span class="stat-label">Readability</span>
+            </div>
+          </div>
+          <div class="stat-card" id="statSEO">
+            <div class="stat-icon seo">
+              <i class="fa-brands fa-searchengin"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="statSEOVal">—</span>
+              <span class="stat-label">SEO Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Cards Grid -->
+        <div class="analysis-grid">
+
+          <!-- Summary Card -->
+          <div class="analysis-card summary-card">
+            <div class="card-header">
+              <div class="card-icon summary">
+                <i class="fa-solid fa-file-contract"></i>
+              </div>
+              <h3>Content Summary</h3>
+            </div>
+            <div class="card-body">
+              <p id="summaryText">—</p>
+            </div>
+          </div>
+
+          <!-- Tone Card -->
+          <div class="analysis-card tone-card">
+            <div class="card-header">
+              <div class="card-icon tone">
+                <i class="fa-solid fa-waveform-lines"></i>
+              </div>
+              <h3>Tone Analysis</h3>
+            </div>
+            <div class="card-body">
+              <div class="tone-badges" id="toneBadges"></div>
+              <p id="toneExplanation">—</p>
+            </div>
+          </div>
+
+          <!-- Readability Card -->
+          <div class="analysis-card readability-card">
+            <div class="card-header">
+              <div class="card-icon readability">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <h3>Readability Level</h3>
+            </div>
+            <div class="card-body">
+              <div class="score-display">
+                <div class="score-circle" id="readabilityCircle">
+                  <span id="readabilityScore">—</span>
+                  <small>/10</small>
+                </div>
+                <div class="score-details">
+                  <span class="level-badge" id="readabilityLevel">—</span>
+                  <p id="readabilityExplanation">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO Card -->
+          <div class="analysis-card seo-card">
+            <div class="card-header">
+              <div class="card-icon seo">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+              <h3>SEO Analysis</h3>
+            </div>
+            <div class="card-body">
+              <div class="seo-score-bar">
+                <div class="score-bar-label">
+                  <span>SEO Score</span>
+                  <span id="seoScoreText">—/10</span>
+                </div>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" id="seoScoreBar"></div>
+                </div>
+              </div>
+              <div class="seo-lists">
+                <div class="seo-strengths">
+                  <h4><i class="fa-solid fa-circle-check"></i> Strengths</h4>
+                  <ul id="seoStrengths"></ul>
+                </div>
+                <div class="seo-suggestions">
+                  <h4><i class="fa-solid fa-circle-arrow-up"></i> Suggestions</h4>
+                  <ul id="seoSuggestions"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Improvements Card -->
+          <div class="analysis-card improvements-card full-width">
+            <div class="card-header">
+              <div class="card-icon improve">
+                <i class="fa-solid fa-arrows-to-circle"></i>
+              </div>
+              <h3>Content Improvement Tips</h3>
+            </div>
+            <div class="card-body">
+              <div class="improvements-grid">
+                <div class="improve-section">
+                  <h4><i class="fa-solid fa-sitemap"></i> Structure</h4>
+                  <ul id="improveStructure"></ul>
+                </div>
+                <div class="improve-section">
+                  <h4><i class="fa-solid fa-pen-nib"></i> Content</h4>
+                  <ul id="improveContent"></ul>
+                </div>
+                <div class="improve-section">
+                  <h4><i class="fa-solid fa-fire"></i> Engagement</h4>
+                  <ul id="improveEngagement"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Error Section -->
+      <section class="error-section" id="errorSection">
+        <div class="error-card">
+          <div class="error-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3>Something went wrong</h3>
+          <p id="errorMessage">Please try again.</p>
+          <button class="btn-retry" id="retryBtn">
+            <i class="fa-solid fa-rotate-right"></i>
+            Try Again
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <p>Built with <i class="fa-solid fa-heart"></i> using Groq API & LLaMA3 &nbsp;|&nbsp; AI Content Analyzer</p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
